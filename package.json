@@ -11,8 +11,8 @@
     "rdf",
     "linked data"
   ],
-  "main": "index.js",
-  "typings": "index",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "repository": "git@github.com:rdfjs/rdfxml-streaming-parser.js.git",
   "author": "Ruben Taelman <rubensworks@gmail.com>",
   "funding": {
@@ -25,12 +25,9 @@
   "homepage": "https://github.com/rdfjs/rdfxml-streaming-parser.js#readme",
   "license": "MIT",
   "files": [
-    "lib/**/*.d.ts",
-    "lib/**/*.js",
-    "lib/**/*.js.map",
-    "index.d.ts",
-    "index.js.map",
-    "index.js"
+    "dist/**/*.d.ts",
+    "dist/**/*.js",
+    "dist/**/*.js.map"
   ],
   "pre-commit": [
     "build",
@@ -95,14 +92,22 @@
     "version": "manual-git-changelog onversion"
   },
   "dependencies": {
+    "@rdfjs/types": "github:rdf-array/types-array#rdf-sequences",
+    "@rubensworks/saxes": "^6.0.1",
     "@types/readable-stream": "^4.0.18",
     "buffer": "^6.0.3",
-    "rdf-data-factory": "^2.0.2",
-    "relative-to-absolute-iri": "^1.0.0",
+    "rdf-data-factory": "github:rdf-array/rdf-data-factory-array#rdf-sequences",
     "readable-stream": "^4.4.2",
-    "@rubensworks/saxes": "^6.0.1",
+    "relative-to-absolute-iri": "^1.0.0",
     "validate-iri": "^1.0.0"
   },
   "sideEffects": false,
-  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e",
+  "types": "dist/index.d.ts",
+  "resolutions": {
+    "@rdfjs/types": "github:rdf-array/types-array#rdf-sequences",
+    "rdf-data-factory": "github:rdf-array/rdf-data-factory-array#rdf-sequences",
+    "rdf-string": "github:rdf-array/rdf-string-array#rdf-sequences",
+    "@types/node": "^22.10.5"
+  }
 }

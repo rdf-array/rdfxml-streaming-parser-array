@@ -538,17 +538,9 @@
     "@jridgewell/resolve-uri" "^3.1.0"
     "@jridgewell/sourcemap-codec" "^1.4.14"
 
-"@rdfjs/types@*", "@rdfjs/types@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@rdfjs/types/-/types-2.0.0.tgz#b360e8892728f6e6345fc5adbdbfe2acde82c8cd"
-  integrity sha512-bHIjRZ6wuQQY/47dKfGI9fCs9/gs83IgHnoPsAgEIj/ASFTl3Eo4SWIPMC0F1B0LqhrapQb1HaakuD6ikpTDEQ==
-  dependencies:
-    "@types/node" "*"
-
-"@rdfjs/types@^1.0.0", "@rdfjs/types@^1.1.0":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@rdfjs/types/-/types-1.1.2.tgz#9c2f9848c44c26d383bed2a808571de3b93b808d"
-  integrity sha512-wqpOJK1QCbmsGNtyzYnojPU8gRDPid2JO0Q0kMtb4j65xhCK880cnKAfEOwC+dX85VJcCByQx5zOwyyfCjDJsg==
+"@rdfjs/types@*", "@rdfjs/types@^1.1.0", "@rdfjs/types@^2.0.0", "@rdfjs/types@github:rdf-array/types-array#rdf-sequences":
+  version "2.0.1"
+  resolved "https://codeload.github.com/rdf-array/types-array/tar.gz/a68a2aaf0e40be543d503881ac21a57351605d9e"
   dependencies:
     "@types/node" "*"
 
@@ -696,19 +688,12 @@
     "@rdfjs/types" "^1.1.0"
     "@types/node" "*"
 
-"@types/node@*":
-  version "22.10.5"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.10.5.tgz#95af89a3fb74a2bb41ef9927f206e6472026e48b"
-  integrity sha512-F8Q+SeGimwOo86fiovQh8qiXfFEh2/ocYv7tU5pJ3EXMSSxk1Joj5wefpFK2fHTf/N6HKGSxIDBT9f3gCxXPkQ==
+"@types/node@*", "@types/node@^18.0.0", "@types/node@^22.10.5":
+  version "22.20.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-22.20.5.tgz#afa7bde6da81b8b83ea4e2f020487e9b148c11fd"
+  integrity sha512-U2+DNr+wSjpsTS/wZGYHq7GcwfuSmKiKvoPvK22zwTlRhU91yOniN4qRR5KhIjvif7ysw/dz/hKmfDH0Ris4aA==
   dependencies:
-    undici-types "~6.20.0"
-
-"@types/node@^18.0.0":
-  version "18.19.70"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.19.70.tgz#5a77508f5568d16fcd3b711c8102d7a430a04df7"
-  integrity sha512-RE+K0+KZoEpDUbGGctnGdkrLFwi1eYKTlIHNl2Um98mUkGsm1u2Ff6Ltd0e8DktTtC98uy7rSj+hO8t/QuLoVQ==
-  dependencies:
-    undici-types "~5.26.4"
+    undici-types "~6.21.0"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.4"
@@ -3156,24 +3141,9 @@ randombytes@^2.1.0:
   dependencies:
     safe-buffer "^5.1.0"
 
-rdf-data-factory@^1.1.0:
-  version "1.1.3"
-  resolved "https://registry.yarnpkg.com/rdf-data-factory/-/rdf-data-factory-1.1.3.tgz#11b39e0c80e51bca83828b2ddaa686f733be966f"
-  integrity sha512-ny6CI7m2bq4lfQQmDYvcb2l1F9KtGwz9chipX4oWu2aAtVoXjb7k3d8J1EsgAsEbMXnBipB/iuRen5H2fwRWWQ==
-  dependencies:
-    "@rdfjs/types" "^1.0.0"
-
-rdf-data-factory@^2.0.0, rdf-data-factory@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/rdf-data-factory/-/rdf-data-factory-2.0.1.tgz#d45895e5b3a7e940a01deade5dee9b313f979134"
-  integrity sha512-qpCmbtuCjdH5I2vnn+RpdAcWr32RKOv0ATKM4A2Df+d4yRk1YWiBnAY/S6ndxxY90bb5Ig9458I6Tlytozu5eg==
-  dependencies:
-    "@rdfjs/types" "^2.0.0"
-
-rdf-data-factory@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/rdf-data-factory/-/rdf-data-factory-2.0.2.tgz#dfac1fdf99502f3b6d61f8e99e97af2490346e32"
-  integrity sha512-WzPoYHwQYWvIP9k+7IBLY1b4nIDitzAK4mA37WumAF/Cjvu/KOtYJH9IPZnUTWNSd5K2+pq4vrcE9WZC4sRHhg==
+rdf-data-factory@^1.1.0, rdf-data-factory@^2.0.0, rdf-data-factory@^2.0.1, "rdf-data-factory@github:rdf-array/rdf-data-factory-array#rdf-sequences":
+  version "2.1.0"
+  resolved "https://codeload.github.com/rdf-array/rdf-data-factory-array/tar.gz/6912f4ceb763bf4d3a23f44b4d3e43a7f8f52903"
   dependencies:
     "@rdfjs/types" "^2.0.0"
 
@@ -3212,12 +3182,11 @@ rdf-quad@^2.0.0:
     rdf-literal "^2.0.0"
     rdf-string "^2.0.0"
 
-rdf-string@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/rdf-string/-/rdf-string-2.0.0.tgz#4b459c0efa37cb7621a400c315540d7359911937"
-  integrity sha512-qxhoVZahUlRuWw1XPwwkT6W1syFNhtoexZDy139FaEyMDEJSiOMaffCe3pgEyBYapnOGDvHjL/zR1D+I8a9vAg==
+rdf-string@^2.0.0, "rdf-string@github:rdf-array/rdf-string-array#rdf-sequences":
+  version "2.0.1"
+  resolved "https://codeload.github.com/rdf-array/rdf-string-array/tar.gz/6398fd15bce53eefc4435dd1b22a3b458b74a841"
   dependencies:
-    rdf-data-factory "^2.0.0"
+    rdf-data-factory "github:rdf-array/rdf-data-factory-array#rdf-sequences"
 
 rdf-terms@^2.0.0:
   version "2.0.0"
@@ -3955,15 +3924,10 @@ typescript@^5.7.2:
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-5.7.2.tgz#3169cf8c4c8a828cde53ba9ecb3d2b1d5dd67be6"
   integrity sha512-i5t66RHxDvVN40HfDd1PsEThGNnlMCMT3jMUuoh9/0TaqWevNontacunWyN02LA9/fIbEWlcHZcgTKb9QoaLfg==
 
-undici-types@~5.26.4:
-  version "5.26.5"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-5.26.5.tgz#bcd539893d00b56e964fd2657a4866b221a65617"
-  integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
-
-undici-types@~6.20.0:
-  version "6.20.0"
-  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.20.0.tgz#8171bf22c1f588d1554d55bf204bc624af388433"
-  integrity sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==
+undici-types@~6.21.0:
+  version "6.21.0"
+  resolved "https://registry.yarnpkg.com/undici-types/-/undici-types-6.21.0.tgz#691d00af3909be93a7faa13be61b3a5b50ef12cb"
+  integrity sha512-iwDZqg0QAGrg9Rav5H4n0M64c3mkR59cJ6wQp+7C4nI0gsmExaedaYLNO44eT4AtBBwjbTiGPMlt2Md0T9H9JQ==
 
 update-browserslist-db@^1.1.1:
   version "1.1.2"

@@ -1,3 +1,16 @@
+<img src=".github/rdf-array-logo.png" alt="[rdfxml-streaming-parser]" width="96" align="right">
+
+# rdfxml-streaming-parser-array: rdfxml-streaming-parser for RDF-
+
+**RDF-** fork of [rdfxml-streaming-parser](https://github.com/rdfjs/rdfxml-streaming-parser.js): a property with
+`rdf:parseType="Collection"` yields one **sequence** term (`termType: "Sequence"`, see
+[rdf-data-factory-array](https://github.com/rdf-array/rdf-data-factory-array)) holding the collection's nodes in
+order, `()` when it is empty, instead of an `rdf:first`/`rdf:rest` ladder ending in `rdf:nil`; `rdf:ID`
+reification and `rdf:annotation` on such a property apply to that one triple. `rdf:li` is no longer rewritten to
+the container membership properties `rdf:_1`, `rdf:_2`, …: it stays the `rdf:li` property. The data factory must
+provide `sequence()`. Part of the [comunica-array](https://github.com/rdf-array/comunica-array) stack, whose
+doc/rdf-array.md lists the sibling forks.
+
 # RDF/XML Streaming Parser
 
 [![Build status](https://github.com/rdfjs/rdfxml-streaming-parser.js/workflows/CI/badge.svg)](https://github.com/rdfjs/rdfxml-streaming-parser.js/actions?query=workflow%3ACI)

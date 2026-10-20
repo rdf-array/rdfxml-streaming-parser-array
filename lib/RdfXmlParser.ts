@@ -398,23 +398,9 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
     if (parentTag) {
       // If the parent tag defined a predicate, add the current tag as property value
       if (parentTag.predicate) {
-        if (parentTag.childrenCollectionSubject) {
-          // RDF:List-based properties
-          const linkTerm: RDF.BlankNode = this.dataFactory.blankNode();
-          const restTerm = this.dataFactory.namedNode(RdfXmlParser.RDF + 'rest');
-
-          // Emit <x> <p> <current-chain> OR <previous-chain> <rdf:rest> <current-chain>
-          const isRestTerm = parentTag.childrenCollectionPredicate.equals(restTerm);
-          this.emitTriple(parentTag.childrenCollectionSubject,
-            parentTag.childrenCollectionPredicate, linkTerm, isRestTerm ? null : parentTag.reifiedStatementId, parentTag.childrenTripleTerms, isRestTerm ? null : parentTag.reifier);
-
-          // Emit <current-chain> <rdf:first> value
-          this.emitTriple(linkTerm, this.dataFactory.namedNode(RdfXmlParser.RDF + 'first'),
-            activeTag.subject, null, activeTag.childrenTripleTerms);
-
-          // Store <current-chain> in the parent node
-          parentTag.childrenCollectionSubject = linkTerm;
-          parentTag.childrenCollectionPredicate = restTerm;
+        if (parentTag.childrenCollectionElements) {
+          // RDF-: an element of a Collection, emitted as one sequence term when the property element closes
+          parentTag.childrenCollectionElements.push(activeTag.subject);
         } else { // !parentTag.predicateEmitted
           // Set-based properties
           if (!parentTag.childrenTagsToTripleTerms) {
@@ -456,15 +442,8 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
   protected onTagProperty(tag: SaxesTagNS, activeTag: IActiveTag, parentTag: IActiveTag) {
     activeTag.childrenParseType = ParseType.RESOURCE;
     activeTag.subject = parentTag.subject; // Inherit parent subject
-    if (tag.uri === RdfXmlParser.RDF && tag.local === 'li') {
-      // Convert rdf:li to rdf:_x
-      if (!parentTag.listItemCounter) {
-        parentTag.listItemCounter = 1;
-      }
-      activeTag.predicate = this.uriToNamedNode(tag.uri + '_' + parentTag.listItemCounter++);
-    } else {
-      activeTag.predicate = this.uriToNamedNode(tag.uri + tag.local);
-    }
+    // RDF-: rdf:li is no longer numbered into the container membership properties rdf:_1, rdf:_2, ...
+    activeTag.predicate = this.uriToNamedNode(tag.uri + tag.local);
 
     // Check forbidden property element names
     if (tag.uri === RdfXmlParser.RDF
@@ -559,10 +538,9 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
             activeTag.predicate = null;
           } else if (propertyAttribute.value === 'Collection') {
             parseType = true;
-            // Interpret children as being part of an rdf:List
+            // RDF-: collect the children as the elements of one sequence term
             activeTag.hadChildren = true;
-            activeTag.childrenCollectionSubject = activeTag.subject;
-            activeTag.childrenCollectionPredicate = activeTag.predicate;
+            activeTag.childrenCollectionElements = [];
             subSubjectValueBlank = false;
           } else if (propertyAttribute.value === 'Literal') {
             parseType = true;
@@ -648,6 +626,18 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
    * @param childrenTripleTerms An optional array to push quads into instead of emitting them.
    * @param reifier The reifier to emit this triple under.
    */
+  /**
+   * RDF-: creates a sequence term, which needs a data factory with sequence() such as rdf-data-factory-array.
+   * @param {Term[]} elements The elements of the sequence.
+   * @return {Sequence} A sequence term.
+   */
+  protected sequence(elements: RDF.Term[]): RDF.Sequence {
+    if (!this.dataFactory.sequence) {
+      throw this.newParseError('The data factory has no sequence(): RDF- needs rdf-data-factory-array');
+    }
+    return this.dataFactory.sequence(elements);
+  }
+
   protected emitTriple(subject: RDF.Quad_Subject, predicate: RDF.Quad_Predicate, object: RDF.Quad_Object,
                        statementId?: RDF.NamedNode,
                        childrenTripleTerms?: RDF.Quad[],
@@ -741,10 +731,10 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
       poppedTag.predicateEmitted = true;
     }
 
-    if (poppedTag.childrenCollectionSubject) {
-      // Terminate the rdf:List
-      this.emitTriple(poppedTag.childrenCollectionSubject, poppedTag.childrenCollectionPredicate,
-        this.dataFactory.namedNode(RdfXmlParser.RDF + 'nil'), null, poppedTag.childrenTripleTerms);
+    if (poppedTag.childrenCollectionElements) {
+      // RDF-: the Collection is one sequence term, `()` when it had no children
+      this.emitTriple(poppedTag.subject, poppedTag.predicate, this.sequence(poppedTag.childrenCollectionElements),
+        poppedTag.reifiedStatementId, poppedTag.childrenTripleTerms, poppedTag.reifier);
     } else if (poppedTag.predicate) {
       if (!poppedTag.hadChildren && poppedTag.childrenParseType !== ParseType.PROPERTY) {
         // Property element contains text
@@ -848,14 +838,12 @@ export interface IActiveTag {
   nodeId?: RDF.BlankNode;
   childrenParseType?: ParseType;
   baseIRI?: string;
-  listItemCounter?: number;
   reifiedStatementId?: RDF.NamedNode;
   childrenTagsToString?: boolean;
   childrenStringTags?: string[];
   childrenStringEmitClosingTag?: string;
-  // for creating rdf:Lists
-  childrenCollectionSubject?: RDF.NamedNode | RDF.BlankNode;
-  childrenCollectionPredicate?: RDF.NamedNode;
+  // RDF-: the elements of an rdf:parseType="Collection" property, emitted as one sequence term
+  childrenCollectionElements?: RDF.Term[];
   childrenTagsToTripleTerms?: boolean;
   childrenTripleTerms?: RDF.Quad[];
   reifier?: RDF.NamedNode | RDF.BlankNode;

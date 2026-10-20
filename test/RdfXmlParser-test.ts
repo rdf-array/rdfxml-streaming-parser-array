@@ -2095,7 +2095,7 @@ abc`)).rejects.toBeTruthy();
       });
 
       // 2.15
-      it('rdf:li properties', async () => {
+      it('rdf:li properties, not numbered (RDF-)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Seq rdf:about="http://example.org/favourite-fruit">
@@ -2106,19 +2106,20 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
+            // RDF-: rdf:li is no longer numbered into rdf:_1, rdf:_2, ...; it stays the rdf:li property
             quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
               'http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq'),
-            quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_1',
+            quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#li',
               'http://example.org/banana'),
-            quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_2',
+            quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#li',
               'http://example.org/apple'),
-            quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#_3',
+            quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#li',
               'http://example.org/pear'),
           ]);
       });
 
       // 2.16
-      it('properties in a rdf:parseType="Collection" to a linked list', async () => {
+      it('properties in a rdf:parseType="Collection" to a sequence (RDF-)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:ex="http://example.org/stuff/1.0/">
@@ -2132,19 +2133,18 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
-            quad('http://example.org/basket', 'http://example.org/stuff/1.0/hasFruit', '_:b1'),
-            quad('_:b1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.org/banana'),
-            quad('_:b1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b2'),
-            quad('_:b2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.org/apple'),
-            quad('_:b2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b3'),
-            quad('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.org/pear'),
-            quad('_:b3', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest',
-              'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'),
+            // RDF-: one sequence term instead of an rdf:first/rdf:rest ladder
+            DF.quad(DF.namedNode('http://example.org/basket'), DF.namedNode('http://example.org/stuff/1.0/hasFruit'),
+              DF.sequence([
+                DF.namedNode('http://example.org/banana'),
+                DF.namedNode('http://example.org/apple'),
+                DF.namedNode('http://example.org/pear'),
+              ])),
           ]);
       });
 
       // 2.16
-      it('zero properties in an empty tag in a rdf:parseType="Collection" to a linked list', async () => {
+      it('zero properties in an empty tag in a rdf:parseType="Collection" to a sequence (RDF-)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:ex="http://example.org/stuff/1.0/">
@@ -2154,13 +2154,14 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
-            quad('http://example.org/basket', 'http://example.org/stuff/1.0/hasFruit',
-              'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'),
+            // RDF-: the empty sequence instead of rdf:nil
+            DF.quad(DF.namedNode('http://example.org/basket'), DF.namedNode('http://example.org/stuff/1.0/hasFruit'),
+              DF.sequence([])),
           ]);
       });
 
       // 2.16
-      it('zero properties in a self-closing tag in a rdf:parseType="Collection" to a linked list', async () => {
+      it('zero properties in a self-closing tag in a rdf:parseType="Collection" to a sequence (RDF-)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:ex="http://example.org/stuff/1.0/">
@@ -2170,9 +2171,22 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
-            quad('http://example.org/basket', 'http://example.org/stuff/1.0/hasFruit',
-              'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'),
+            // RDF-: the empty sequence instead of rdf:nil
+            DF.quad(DF.namedNode('http://example.org/basket'), DF.namedNode('http://example.org/stuff/1.0/hasFruit'),
+              DF.sequence([])),
           ]);
+      });
+
+      it('rdf:parseType="Collection" with a data factory without sequence() (RDF-)', async () => {
+        const dataFactory: any = new DataFactory();
+        dataFactory.sequence = undefined;
+        return expect(parse(new RdfXmlParser({ dataFactory }), `<?xml version="1.0"?>
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+         xmlns:ex="http://example.org/stuff/1.0/">
+  <rdf:Description rdf:about="http://example.org/basket">
+    <ex:hasFruit rdf:parseType="Collection" />
+  </rdf:Description>
+</rdf:RDF>`)).rejects.toThrow('The data factory has no sequence(): RDF- needs rdf-data-factory-array');
       });
 
       it('rdf:parseType="Collection" and rdf:ID', async () => {
@@ -2194,16 +2208,19 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
             .toBeRdfIsomorphic([
+              // RDF-: the reified statement's object is the sequence term
               quad('http://example.org/eg#eric', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '_:b99_a0'),
-              quad('_:b99_a0', 'http://example.org/eg#intersectionOf', '_:b99_a1'),
+              DF.quad(DF.blankNode('b99_a0'), DF.namedNode('http://example.org/eg#intersectionOf'), DF.sequence([
+                DF.namedNode('http://example.org/eg#Person'),
+                DF.namedNode('http://example.org/eg#Male'),
+              ])),
               quad('http://example.com/#reif', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#subject', '_:b99_a0'),
               quad('http://example.com/#reif', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate', 'http://example.org/eg#intersectionOf'),
-              quad('http://example.com/#reif', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#object', '_:b99_a1'),
+              DF.quad(DF.namedNode('http://example.com/#reif'), DF.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#object'), DF.sequence([
+                DF.namedNode('http://example.org/eg#Person'),
+                DF.namedNode('http://example.org/eg#Male'),
+              ])),
               quad('http://example.com/#reif', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#Statement'),
-              quad('_:b99_a1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.org/eg#Person'),
-              quad('_:b99_a1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:b99_a2'),
-              quad('_:b99_a2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.org/eg#Male'),
-              quad('_:b99_a2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'),
             ]);
       });
 
@@ -2981,13 +2998,17 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
             .toBeRdfIsomorphic([
+              // RDF-: the annotated triple's object is the sequence term
               quad('http://example.org/eg#eric', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '_:an0'),
-              quad('_:an0', 'http://example.org/eg#intersectionOf', '_:an1'),
-              quad('http://example.com/triple1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies', '<<_:an0 http://example.org/eg#intersectionOf _:an1>>'),
-              quad('_:an1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.org/eg#Person'),
-              quad('_:an1', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', '_:an2'),
-              quad('_:an2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first', 'http://example.org/eg#Male'),
-              quad('_:an2', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'),
+              DF.quad(DF.blankNode('an0'), DF.namedNode('http://example.org/eg#intersectionOf'), DF.sequence([
+                DF.namedNode('http://example.org/eg#Person'),
+                DF.namedNode('http://example.org/eg#Male'),
+              ])),
+              DF.quad(DF.namedNode('http://example.com/triple1'), DF.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#reifies'),
+                DF.quad(DF.blankNode('an0'), DF.namedNode('http://example.org/eg#intersectionOf'), DF.sequence([
+                  DF.namedNode('http://example.org/eg#Person'),
+                  DF.namedNode('http://example.org/eg#Male'),
+                ]))),
             ]);
       });
 
