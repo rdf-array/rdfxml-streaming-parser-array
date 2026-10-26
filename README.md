@@ -1,6 +1,6 @@
 <img src=".github/rdf-array-logo.png" alt="[rdfxml-streaming-parser]" width="96" align="right">
 
-# rdfxml-streaming-parser-array: rdfxml-streaming-parser for RDF-
+# rdfxml-streaming-parser-array: rdfxml-streaming-parser for rdf-array
 
 **RDF-** fork of [rdfxml-streaming-parser](https://github.com/rdfjs/rdfxml-streaming-parser.js): a property with
 `rdf:parseType="Collection"` yields one **sequence** term (`termType: "Sequence"`, see

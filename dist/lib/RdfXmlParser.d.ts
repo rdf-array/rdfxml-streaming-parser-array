@@ -107,7 +107,7 @@ export declare class RdfXmlParser extends Transform implements RDF.Sink<EventEmi
      * @param reifier The reifier to emit this triple under.
      */
     /**
-     * RDF-: creates a sequence term, which needs a data factory with sequence() such as rdf-data-factory-array.
+     * rdf-array: creates a sequence term, which needs a data factory with sequence() such as rdf-data-factory-array.
      * @param {Term[]} elements The elements of the sequence.
      * @return {Sequence} A sequence term.
      */

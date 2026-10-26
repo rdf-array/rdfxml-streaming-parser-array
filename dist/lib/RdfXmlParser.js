@@ -325,7 +325,7 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
             // If the parent tag defined a predicate, add the current tag as property value
             if (parentTag.predicate) {
                 if (parentTag.childrenCollectionElements) {
-                    // RDF-: an element of a Collection, emitted as one sequence term when the property element closes
+                    // rdf-array: an element of a Collection, emitted as one sequence term when the property element closes
                     parentTag.childrenCollectionElements.push(activeTag.subject);
                 }
                 else { // !parentTag.predicateEmitted
@@ -363,7 +363,7 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
     onTagProperty(tag, activeTag, parentTag) {
         activeTag.childrenParseType = ParseType.RESOURCE;
         activeTag.subject = parentTag.subject; // Inherit parent subject
-        // RDF-: rdf:li is no longer numbered into the container membership properties rdf:_1, rdf:_2, ...
+        // rdf-array: rdf:li is no longer numbered into the container membership properties rdf:_1, rdf:_2, ...
         activeTag.predicate = this.uriToNamedNode(tag.uri + tag.local);
         // Check forbidden property element names
         if (tag.uri === RdfXmlParser.RDF
@@ -447,7 +447,7 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
                         }
                         else if (propertyAttribute.value === 'Collection') {
                             parseType = true;
-                            // RDF-: collect the children as the elements of one sequence term
+                            // rdf-array: collect the children as the elements of one sequence term
                             activeTag.hadChildren = true;
                             activeTag.childrenCollectionElements = [];
                             subSubjectValueBlank = false;
@@ -537,13 +537,13 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
      * @param reifier The reifier to emit this triple under.
      */
     /**
-     * RDF-: creates a sequence term, which needs a data factory with sequence() such as rdf-data-factory-array.
+     * rdf-array: creates a sequence term, which needs a data factory with sequence() such as rdf-data-factory-array.
      * @param {Term[]} elements The elements of the sequence.
      * @return {Sequence} A sequence term.
      */
     sequence(elements) {
         if (!this.dataFactory.sequence) {
-            throw this.newParseError('The data factory has no sequence(): RDF- needs rdf-data-factory-array');
+            throw this.newParseError('The data factory has no sequence(): rdf-array needs rdf-data-factory-array');
         }
         return this.dataFactory.sequence(elements);
     }
@@ -625,7 +625,7 @@ while ${attribute.value} and ${activeSubjectValue} where found.`);
             poppedTag.predicateEmitted = true;
         }
         if (poppedTag.childrenCollectionElements) {
-            // RDF-: the Collection is one sequence term, `()` when it had no children
+            // rdf-array: the Collection is one sequence term, `()` when it had no children
             this.emitTriple(poppedTag.subject, poppedTag.predicate, this.sequence(poppedTag.childrenCollectionElements), poppedTag.reifiedStatementId, poppedTag.childrenTripleTerms, poppedTag.reifier);
         }
         else if (poppedTag.predicate) {

@@ -2095,7 +2095,7 @@ abc`)).rejects.toBeTruthy();
       });
 
       // 2.15
-      it('rdf:li properties, not numbered (RDF-)', async () => {
+      it('rdf:li properties, not numbered (rdf-array)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
   <rdf:Seq rdf:about="http://example.org/favourite-fruit">
@@ -2106,7 +2106,7 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
-            // RDF-: rdf:li is no longer numbered into rdf:_1, rdf:_2, ...; it stays the rdf:li property
+            // rdf-array: rdf:li is no longer numbered into rdf:_1, rdf:_2, ...; it stays the rdf:li property
             quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type',
               'http://www.w3.org/1999/02/22-rdf-syntax-ns#Seq'),
             quad('http://example.org/favourite-fruit', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#li',
@@ -2119,7 +2119,7 @@ abc`)).rejects.toBeTruthy();
       });
 
       // 2.16
-      it('properties in a rdf:parseType="Collection" to a sequence (RDF-)', async () => {
+      it('properties in a rdf:parseType="Collection" to a sequence (rdf-array)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:ex="http://example.org/stuff/1.0/">
@@ -2133,7 +2133,7 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
-            // RDF-: one sequence term instead of an rdf:first/rdf:rest ladder
+            // rdf-array: one sequence term instead of an rdf:first/rdf:rest ladder
             DF.quad(DF.namedNode('http://example.org/basket'), DF.namedNode('http://example.org/stuff/1.0/hasFruit'),
               DF.sequence([
                 DF.namedNode('http://example.org/banana'),
@@ -2144,7 +2144,7 @@ abc`)).rejects.toBeTruthy();
       });
 
       // 2.16
-      it('zero properties in an empty tag in a rdf:parseType="Collection" to a sequence (RDF-)', async () => {
+      it('zero properties in an empty tag in a rdf:parseType="Collection" to a sequence (rdf-array)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:ex="http://example.org/stuff/1.0/">
@@ -2154,14 +2154,14 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
-            // RDF-: the empty sequence instead of rdf:nil
+            // rdf-array: the empty sequence instead of rdf:nil
             DF.quad(DF.namedNode('http://example.org/basket'), DF.namedNode('http://example.org/stuff/1.0/hasFruit'),
               DF.sequence([])),
           ]);
       });
 
       // 2.16
-      it('zero properties in a self-closing tag in a rdf:parseType="Collection" to a sequence (RDF-)', async () => {
+      it('zero properties in a self-closing tag in a rdf:parseType="Collection" to a sequence (rdf-array)', async () => {
         const array = await parse(parser, `<?xml version="1.0"?>
 <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
          xmlns:ex="http://example.org/stuff/1.0/">
@@ -2171,13 +2171,13 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
           .toBeRdfIsomorphic([
-            // RDF-: the empty sequence instead of rdf:nil
+            // rdf-array: the empty sequence instead of rdf:nil
             DF.quad(DF.namedNode('http://example.org/basket'), DF.namedNode('http://example.org/stuff/1.0/hasFruit'),
               DF.sequence([])),
           ]);
       });
 
-      it('rdf:parseType="Collection" with a data factory without sequence() (RDF-)', async () => {
+      it('rdf:parseType="Collection" with a data factory without sequence() (rdf-array)', async () => {
         const dataFactory: any = new DataFactory();
         dataFactory.sequence = undefined;
         return expect(parse(new RdfXmlParser({ dataFactory }), `<?xml version="1.0"?>
@@ -2186,7 +2186,7 @@ abc`)).rejects.toBeTruthy();
   <rdf:Description rdf:about="http://example.org/basket">
     <ex:hasFruit rdf:parseType="Collection" />
   </rdf:Description>
-</rdf:RDF>`)).rejects.toThrow('The data factory has no sequence(): RDF- needs rdf-data-factory-array');
+</rdf:RDF>`)).rejects.toThrow('The data factory has no sequence(): rdf-array needs rdf-data-factory-array');
       });
 
       it('rdf:parseType="Collection" and rdf:ID', async () => {
@@ -2208,7 +2208,7 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
             .toBeRdfIsomorphic([
-              // RDF-: the reified statement's object is the sequence term
+              // rdf-array: the reified statement's object is the sequence term
               quad('http://example.org/eg#eric', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '_:b99_a0'),
               DF.quad(DF.blankNode('b99_a0'), DF.namedNode('http://example.org/eg#intersectionOf'), DF.sequence([
                 DF.namedNode('http://example.org/eg#Person'),
@@ -2998,7 +2998,7 @@ abc`)).rejects.toBeTruthy();
 </rdf:RDF>`);
         return expect(array)
             .toBeRdfIsomorphic([
-              // RDF-: the annotated triple's object is the sequence term
+              // rdf-array: the annotated triple's object is the sequence term
               quad('http://example.org/eg#eric', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type', '_:an0'),
               DF.quad(DF.blankNode('an0'), DF.namedNode('http://example.org/eg#intersectionOf'), DF.sequence([
                 DF.namedNode('http://example.org/eg#Person'),
